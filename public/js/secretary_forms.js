@@ -2,22 +2,46 @@ var docTypes = ['icla', 'grant', 'ccla', 'nda', 'other'];
 
 var DocumentForm = React.createClass({displayName: "DocumentForm",
   getInitialState: function() {
-
+    return {display_form: ''};
   },
   
   handleDocTypeChange: function(event) {
     var type = event.target.value;
+    this.setState({display_form: type});
   },
 
   render: function() {
+    var types = _.map(docTypes, function (docType) {
+      return (
+        React.createElement("input", {type: "radio", name: "doctype", onChange: this.handleDocTypeChange, value: doctype})
+      );
+    }.bind(this));
+
+    var formToDisplay = null;
+    switch(this.state.display_form) {
+      case 'icla':
+        formToDisplay = IclaForm;
+        break;
+      case 'nda':
+        formToDisplay = NdaForm;
+        break;
+      case 'grant':
+        formToDisplay = GrantForm;
+        break;
+      case 'ccla':
+        formToDisplay = CclaForm;
+        break;
+      case 'other':
+        formToDisplay = OtherForm;
+        break;
+      default:
+        formToDisplay = null;
+    }
+
     return (
       React.createElement("form", {className: "documentForm"}, 
-        React.createElement("input", {type: "radio", name: "doctype", onChange: this.handleDocTypeChange, value: "icla"}), 
-        React.createElement("input", {type: "radio", name: "doctype", onChange: this.handleDocTypeChange, value: "grant"}), 
-        React.createElement("input", {type: "radio", name: "doctype", onChange: this.handleDocTypeChange, value: "ccla"}), 
-        React.createElement("input", {type: "radio", name: "doctype", onChange: this.handleDocTypeChange, value: "nda"}), 
-        React.createElement("input", {type: "radio", name: "doctype", onChange: this.handleDocTypeChange, value: "other"}), 
-        React.createElement("input", {type: "submit", value: "post"})
+        types, 
+        formToDisplay
       )
     );
   }
@@ -30,7 +54,11 @@ var IclaForm = React.createClass({displayName: "IclaForm",
         React.createElement("input", {name: "realname", type: "text"}), 
         React.createElement("input", {name: "pubname", type: "text"}), 
         React.createElement("input", {name: "email", type: "text"}), 
-        React.createElement("input", {name: "filename", type: "text"})
+        React.createElement("input", {name: "filename", type: "text"}), 
+        React.createElement("input", {name: "user_id", type: "text"}), 
+        React.createElement("input", {name: "pmc", type: "text"}), 
+        React.createElement("input", {name: "podling", type: "text"}), 
+        React.createElement("input", {name: "vote_link", type: "text"})
       )
     );
   }
@@ -57,7 +85,9 @@ var GrantForm = React.createClass({displayName: "GrantForm",
         React.createElement("textarea", {name: "description", rows: "5"}), 
         React.createElement("input", {name: "name", type: "text"}), 
         React.createElement("input", {name: "email", type: "email"}), 
-        React.createElement("input", {name: "filename", type: "text"})
+        React.createElement("input", {name: "filename", type: "text"}), 
+        React.createElement("input", {name: "pmc", type: "text"}), 
+        React.createElement("input", {name: "podling", type: "text"})
       )
     );
   }
@@ -72,7 +102,32 @@ var CclaForm = React.createClass({displayName: "CclaForm",
         React.createElement("input", {name: "contact", type: "text"}), 
         React.createElement("input", {name: "email", type: "text"}), 
         React.createElement("textarea", {name: "employees", rows: "5"}), 
-        React.createElement("input", {name: "filename", type: "text"})
+        React.createElement("input", {name: "filename", type: "text"}), 
+        React.createElement("input", {name: "pmc", type: "text"}), 
+        React.createElement("input", {name: "podling", type: "text"})
+      )
+    );
+  }
+});
+
+var OtherForm = React.createClass({displayName: "OtherForm",
+  render: function() {
+    return (
+      React.createElement("div", {className: "specificForm"}, 
+        React.createElement("div", {className: "fileActionBlock"}, 
+          React.createElement("input", {type: "submit", name: "action", value: "burst"}), 
+          React.createElement("input", {type: "submit", name: "dest", value: "flip"}), 
+          React.createElement("input", {type: "submit", name: "dest", value: "restore"}), 
+          React.createElement("input", {type: "submit", name: "dest", value: "rotate right"}), 
+          React.createElement("input", {type: "submit", name: "dest", value: "rotate left"})
+        ), 
+        React.createElement("div", {className: "classificationBlock"}, 
+          React.createElement("input", {type: "submit", name: "dest", value: "operations"}), 
+          React.createElement("input", {type: "submit", name: "dest", value: "dup"}), 
+          React.createElement("input", {type: "submit", name: "dest", value: "junk"}), 
+          React.createElement("input", {type: "submit", name: "dest", value: "incomplete"}), 
+          React.createElement("input", {type: "submit", name: "dest", value: "unsigned"})
+        )
       )
     );
   }
