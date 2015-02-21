@@ -1,14 +1,44 @@
+var websocketHandler = SocketHandler();
+
 var DocumentList = React.createClass({
+  getInitialState: function () {
+    return {documents: []};
+  },
+
+  getDocuments: function () {
+    this.setState({documents: []});
+    var ws = this.props.websocketHandler;
+    ws.sendRequest({command: 'list_documents'}, function (message) {
+      this.setState({documents: message.data});
+    }); 
+  },
+
+  formatDocuments: function () {
+    var docs = _.map(this.documents, function(doc) {
+      return (
+        <Document filename={doc.filename}>{doc.filename}</Document>
+      );
+    }.bind(this));
+  },
+
   render: function() {
     return (
       <div className="documentList">
-        <Document filename="Test">Doc</Document>
+        {this.documents}
       </div>
     );
   }
 });
 
 var Document = React.createClass({
+  getInitialState: function() {
+    return {selected: false};
+  },
+
+  handleClick: function() {
+    this.setState({selected: true});
+  },
+
   render: function() {
     return (
       <div className="document">

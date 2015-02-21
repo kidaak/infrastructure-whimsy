@@ -1,3 +1,59 @@
-var scheme = "<%= @scheme %>";
-var uri = scheme + window.document.location.host + "/";
-var ws = new WebSocket(uri);
+function SocketHandler() {
+  var ws;
+  var connected = false;
+  var methods = {};
+  var callbacks = {};
+
+  function init() {
+    var scheme = "<%= @scheme %>";
+    var uri = scheme + window.document.location.host + "/";
+    ws = new WebSocket(uri);
+
+    ws.onopen = function () {
+      connected = true;
+    };
+
+    ws.onclose = function () {
+      connected = false;
+    };
+
+    ws.onmessage = function(message) {
+      var response = JSON.parse(message.data);
+      handleMessage(response);
+    };
+  };
+
+  function handleMessage(message) {
+    if callbacks.hasOwnProperty(message.id) {
+      callbacks[message.id](message);
+    }
+  };
+
+  function sendRequest(request, callback) {
+    if(ws && [2, 3].indexOf(ws.readyState) != -1) {
+      connected = false;
+      init();
+    }
+
+    request.id = messageId();
+    if(connected) {
+      ws.send(JSON.stringify(request));
+      callbacks[message_id] = callback;
+    }
+
+    return request.id;
+  };
+
+  function getResult() {
+    return results.pop();
+  };
+
+  function messageId() {
+    return new Date().getTime().toString() + Math.floor((Math.random() * 1000) * 1);
+  };
+
+  init();
+  methods.sendRequest = sendRequest;
+  methodsGetResult = getResult;
+  return methods;
+}
