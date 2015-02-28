@@ -1,16 +1,23 @@
 function SocketHandler() {
   var ws;
-  var connected = false;
   var methods = {};
   var callbacks = {};
+  var connected = false;
+  var requestsQueue = [];
 
   function init() {
     var scheme = "<%= @scheme %>";
     var uri = scheme + window.document.location.host + "/";
     ws = new WebSocket(uri);
+    connected = false;
 
     ws.onopen = function () {
       connected = true;
+      if (requestsQueue.length > 0) {
+        _.each(requestsQueue, function(request) {
+          ws.send(JSON.stringify(request));
+        });
+      }
     };
 
     ws.onclose = function () {
@@ -21,10 +28,12 @@ function SocketHandler() {
       var response = JSON.parse(message.data);
       handleMessage(response);
     };
-  };
+  }
+
+  init();
 
   function handleMessage(message) {
-    if callbacks.hasOwnProperty(message.id) {
+    if(callbacks.hasOwnProperty(message.id)) {
       callbacks[message.id](message);
     }
   };
@@ -36,9 +45,13 @@ function SocketHandler() {
     }
 
     request.id = messageId();
+    callbacks[request.id] = callback;
+
     if(connected) {
       ws.send(JSON.stringify(request));
-      callbacks[message_id] = callback;
+    }
+    else {
+      requestsQueue.push(request);
     }
 
     return request.id;
@@ -52,7 +65,6 @@ function SocketHandler() {
     return new Date().getTime().toString() + Math.floor((Math.random() * 1000) * 1);
   };
 
-  init();
   methods.sendRequest = sendRequest;
   methodsGetResult = getResult;
   return methods;

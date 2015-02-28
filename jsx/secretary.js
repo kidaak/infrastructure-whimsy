@@ -5,26 +5,34 @@ var DocumentList = React.createClass({
     return {documents: []};
   },
 
+  formatDocuments: function (documents) {
+    var docs = _.map(documents.result, function(doc) {
+      return (
+        <Document key={doc.filename} filename={doc.filename}>{doc.filename}</Document>
+      );
+    });
+    return docs;
+  },
+
   getDocuments: function () {
     this.setState({documents: []});
     var ws = this.props.websocketHandler;
     ws.sendRequest({command: 'list_documents'}, function (message) {
-      this.setState({documents: message.data});
-    }); 
+      console.log(message);
+      var docs = this.formatDocuments(message);
+      this.setState({documents: docs});
+    }.bind(this)); 
   },
 
-  formatDocuments: function () {
-    var docs = _.map(this.documents, function(doc) {
-      return (
-        <Document filename={doc.filename}>{doc.filename}</Document>
-      );
-    }.bind(this));
+  componentWillMount: function() {
+    this.getDocuments();
   },
+
 
   render: function() {
     return (
       <div className="documentList">
-        {this.documents}
+        {this.state.documents}
       </div>
     );
   }
@@ -53,18 +61,17 @@ var Document = React.createClass({
 
 var WorkListView = React.createClass({
   getInitialState: function() {
-    return {data: []};
+    return {websocketHandler: null};
   },
   render: function() {
     return (
       <div className="worklistBox">
         <h3>Worklist</h3>
-        <DocumentList data={this.state.data} />
+        <DocumentList websocketHandler={websocketHandler} />
       </div>
     );
   }
 });
-
 
 React.render(
     <WorkListView />,

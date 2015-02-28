@@ -25,7 +25,7 @@ module Rack
 
         ws.on :message do |event|
           puts [:message, event.data] if @development
-          @clients.each {|client| client.send(sanitize(event.data))}
+          @clients.each {|client| client.send(handler(sanitize(event.data)))}
         end
 
         ws.on :close do |event|
@@ -39,6 +39,14 @@ module Rack
         @app.call(env)
       end
     end
+
+    def handler(event)
+      data = MultiJson.load(event)
+      result = {'result' => [{'filename' => 'test'}], 'id' => data["id"]}
+      puts result
+      MultiJson.dump(result)
+    end
+
 
     private
     def sanitize(message)
