@@ -6,30 +6,6 @@
   :received:   /var/tools/secretary/documents/received
   :subreq:     /var/tools/secretary/subreq
 
-# Not sure if these are necessary
-:old_podlings:
-  - 'allura'
-  - 'ambari'
-  - 'blur'
-  - 'celix'
-  - 'chukwa'
-  - 'deltaspike'
-  - 'devicemap'
-  - 'drill'
-  - 'droids'
-  - 'hcatalog'
-  - 'jspwiki'
-  - 'kafka'
-  - 'kalumet'
-  - 'mesos'
-  - 'npanday'
-  - 'odf'
-  - 'onami'
-  - 's4'
-  - 'tashi'
-  - 'vxquery'
-  - 'wave'
-
 # Update these users when they change
 :secretary:
   - clr
