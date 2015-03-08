@@ -49,11 +49,9 @@ var Document = React.createClass({
 
   render: function() {
     return (
-      <div className="document">
-        <h4 className="filename">
-          {this.props.filename}
-        </h4>
-        {this.props.children}
+      <div className="document" onClick={this.handleClick}>
+        <h4 className="filename">{this.props.filename}</h4>
+        <p>{this.props.children}</p>
       </div>
     );
   }
