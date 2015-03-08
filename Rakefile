@@ -3,6 +3,6 @@
 # the release process
 task :bootstrap do
   puts `npm install`
-  puts `bower install`
+  puts `bower install --allow-root`
   puts `jsx jsx public/js`
 end
