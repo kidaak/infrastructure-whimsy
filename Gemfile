@@ -8,6 +8,8 @@ gem 'multi_json'
 gem 'oj'
 gem 'puma'
 gem 'redis'
+gem 'require_all'
+gem 'rye'
 
 group :development do
   gem 'rspec', :require => false

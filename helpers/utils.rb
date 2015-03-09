@@ -1,6 +1,6 @@
 require 'sinatra/base'
-require_relative 'utils/name_handler'
-require_relative 'utils/email'
+require 'require_all'
+require_rel 'utils'
 
 module Sinatra
   module Utils

@@ -6,23 +6,8 @@ require 'yaml'
 
 class WhimsyApp < Sinatra::Base
 
-  def self.load_config
-    file = 'config/config.yaml'
-    dev_redis = 'config/redis.development'
-    if File.exist? file
-      @@config = OpenStruct.new(Psych.load(File.read(file)))
-      
-      if WhimsyApp.development?
-        redis_config = Psych.load(File.read(dev_redis))
-        @@config[:redis] = redis_config
-      end
-    else
-      raise Exeception.new("Unable to read #{file}")
-    end
-  end
-
   def self.config
-    @@config
+    @@config ||= Sinatra::Config.load_config(WhimsyApp.development?)
   end
   
   configure do

@@ -8,6 +8,10 @@ module Rack
   class WebSocketHandler
     KEEP_ALIVE = 15
 
+    COMMANDS = [
+      'list_documents'
+    ]
+
     def initialize(app)
       @app = app
       @clients = []
@@ -45,6 +49,9 @@ module Rack
       result = {'result' => [{'filename' => 'test'}], 'id' => data["id"]}
       puts result
       MultiJson.dump(result)
+    end
+
+    def list_documents
     end
 
 
